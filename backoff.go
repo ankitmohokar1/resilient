@@ -1,7 +1,6 @@
 package resilient
 
 import (
-	"math"
 	"math/rand"
 	"time"
 )
@@ -146,18 +145,3 @@ type NoBackoff struct{}
 
 // Delay implements Backoff.
 func (NoBackoff) Delay(int, *rand.Rand) time.Duration { return 0 }
-
-// capDuration clamps d into [0, max], guarding against the overflow that a very large
-// Retry-After header can otherwise produce.
-func capDuration(d, max time.Duration) time.Duration {
-	if d < 0 {
-		return 0
-	}
-	if max > 0 && d > max {
-		return max
-	}
-	if d > math.MaxInt64/2 {
-		return max
-	}
-	return d
-}
